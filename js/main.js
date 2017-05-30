@@ -2,50 +2,41 @@ var Location = function(data) {
   this.name = ko.observable(data.name);
   this.city = ko.observable(data.city);
   this.street = ko.observable(data.street);
-  this.lat = data.lat;
-  this.lng = data.lng;
 //  this.description = data.description;
 
   this.address = ko.computed(function() {
     return data.street + " " + data.city;
   },this);
+
+  this.location = getlnglat(this.address);
 };
+
 var initialLocations = [
-  {
+  new Location({
     "name": "Visitor Center",
     "street": "799 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA",
-    "lat": 29.760305,
-    "lng": -90.099738
-  },
-  {
+    "city": "Lafitte, LA"
+  }),
+  new Location({
     "name": "Swamp Tour 2",
     "street": "1037 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA",
-    "lat": 29.751975,
-    "lng": -90.130257
-  },
-  {
+    "city": "Lafitte, LA"
+  }),
+  new Location({
     "name": "Swamp Tour 3",
     "street": "1037 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA",
-    "lat": 29.739480,
-    "lng": -90.128931
-  },
-  {
+    "city": "Lafitte, LA"
+  }),
+  new Location({
     "name": "Swamp Tour 4",
     "street": "1037 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA",
-    "lat": 29.728401,
-    "lng": -90.121071
-  },
-  {
+    "city": "Lafitte, LA"
+  }),
+  new Location({
     "name": "Swamp Tour 5",
     "street": "1037 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA",
-    "lat": 29.703125,
-    "lng": -90.101188
-  }
+    "city": "Lafitte, LA"
+  })
 ];
 var ViewModel = function() {
   var self = this;
@@ -128,16 +119,17 @@ function hideLocations() {
   }
 }
 
-function getlnglat() {
+function getlnglat(address) {
   var geocoder = new google.maps.Geocoder();
-  initialLocations.forEach(function(locationData) {
-    var address = locationData.street + " " + locationData.city;
+//  initialLocations.forEach(function(locationData) {
+//    var address = locationData.street + " " + locationData.city;
     geocoder.geocode(
       {address: address,
         componentRestrictions: {locality: 'Lafitte'
       }, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-          //TODO: Enter code to
+          return results[0].geometry.location;
+          //TODO: Enter code to return location
         }
         else {
           console.log('We could not find that location' + address);
@@ -145,5 +137,4 @@ function getlnglat() {
       }
     });
   });
-  var address =
 }
