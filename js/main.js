@@ -4,6 +4,7 @@ var Location = function(data) {
   this.street = ko.observable(data.street);
   this.lat = data.lat;
   this.lng = data.lng;
+//  this.description = data.description;
 
   this.address = ko.computed(function() {
     return data.street + " " + data.city;
@@ -11,8 +12,8 @@ var Location = function(data) {
 };
 var initialLocations = [
   {
-    "name": "Swamp Tour 1",
-    "street": "1037 Jean Lafitte Blvd.",
+    "name": "Visitor Center",
+    "street": "799 Jean Lafitte Blvd.",
     "city": "Lafitte, LA",
     "lat": 29.760305,
     "lng": -90.099738
@@ -125,4 +126,24 @@ function hideLocations() {
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(null);
   }
+}
+
+function getlnglat() {
+  var geocoder = new google.maps.Geocoder();
+  initialLocations.forEach(function(locationData) {
+    var address = locationData.street + " " + locationData.city;
+    geocoder.geocode(
+      {address: address,
+        componentRestrictions: {locality: 'Lafitte'
+      }, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          //TODO: Enter code to
+        }
+        else {
+          console.log('We could not find that location' + address);
+        }
+      }
+    });
+  });
+  var address =
 }
