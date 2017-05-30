@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel='stylesheet' href="css/main.css">
+
+
+  </head>
+  <body>
+    <div class="sidemenu">
+      <ul data-bind= "foreach:locationlist" class="locationlist">
+        <li data-bind= "text:name, click:$parent.setLocation" class="location"></li>
+      </ul>
+    </div>
+    <div id="map">
+    </div>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCtGdgazRgqVrJfM61ozqT-FqT_rsqFWQU&v=3&callback=initMap">
+    </script>
+    <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
+    <script type='text/javascript' src='js/main.js'></script>
+  </body>
+  </html>
