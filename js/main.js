@@ -59,7 +59,7 @@ ko.applyBindings(new ViewModel());
 
 var map;
 var markers = [];
-
+var bounds;
 
 //var marker;
 
@@ -71,7 +71,7 @@ function initMap() {
   });
 
   var infowindow = new google.maps.InfoWindow();
-  var bounds = new google.maps.LatLngBounds();
+  bounds = new google.maps.LatLngBounds();
 
   initialLocations.forEach(function(locationData) {
     //console.log(locationData);
@@ -99,11 +99,13 @@ function getLatLong(address) {
           id: initialLocations.indexOf(locationData)
         });
         markers.push(marker);
-        bounds.extend(marker.position);
-
+        bounds.extend(results[0].geometry.location);
+        console.log(bounds);
         marker.addListener('click', function() {
           populateInfoWindow(this, infowindow, locationData.name);
         });
+
+        map.fitBounds(bounds);
     //    console.log('hello');
         //  callback(results[0].geometry.location);
           //console.log(geoLocation);
@@ -116,6 +118,7 @@ function getLatLong(address) {
         alert('Geocode was not successful for the following reason: ' + status);
       }
     });
+
   }
 
 getLatLong(locationData.street + " " + locationData.city);
@@ -127,10 +130,13 @@ getLatLong(locationData.street + " " + locationData.city);
 
 
   });
-  map.fitBounds(bounds);
+
+  console.log("map");
 
   document.getElementById('show-listings').addEventListener('click', showLocations);
   document.getElementById('hide-listings').addEventListener('click', hideLocations);
+
+
 }
 
 function populateInfoWindow(marker, infowindow, content) {
