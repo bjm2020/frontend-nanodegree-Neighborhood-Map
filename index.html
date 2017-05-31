@@ -13,25 +13,22 @@
     <link rel='stylesheet' href="css/main.css">
   </head>
   <body>
-
-<div class = "container-fluid">
-  <div class = "row">
-
-    <div class="col-md-2">
-        <input id="show-listings" type="button" value = "Show Listings" />
-        <input id="hide-listings" type="button" value = "Hide Listings" />
-                <ul data-bind= "foreach:locationlist" class="sidebar-nav">
-                  <li data-bind= "text:name, click:$parent.setLocation" class="location sidebar-brand"></li>
-                </ul>
-          </div>
-
-    <div class="col-md-10">
-      <div id="map">
-        
-      </div>
-
+    <div id="wrapper">
+    <div id="map">
     </div>
-  </div>
+      <div id="overlay">
+              <input id="show-listings" type="button" value = "Show Listings" />
+              <input id="hide-listings" type="button" value = "Hide Listings" />
+                      <ul data-bind= "foreach:locationlist" class="sidebar-nav">
+                        <li data-bind= "text:name, click:$parent.setLocation" class="location sidebar-brand"></li>
+                      </ul>
+      </div>
+    </div>  
+
+
+
+
+
 
 
 
