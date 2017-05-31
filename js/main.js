@@ -1,62 +1,67 @@
+var initialLocations = [
+  {
+    "name": "Visitor Center",
+    "street": "799 Jean Lafitte Blvd.",
+    "city": "Lafitte, LA"
+  },
+  {
+    "name": "Jean Lafitte National Historic Park and Preserve",
+    "street": "6558 Barataria Blvd.",
+    "city": "Marrero, LA"
+  },
+  {
+    "name": "Wetland Trace",
+    "street": "4924 City Park Street",
+    "city": "Lafitte, LA"
+  },
+  {
+    "name": "Lafitte's Barataria Museum",
+    "street": "4917 City Park Drive",
+    "city": "Lafitte, LA"
+  },
+  {
+    "name": "Airboat Adventures",
+    "street": "5145 Fleming Park Road",
+    "city": "Lafitte, LA"
+  }
+];
+
 var Location = function(data) {
   this.name = ko.observable(data.name);
   this.city = ko.observable(data.city);
   this.street = ko.observable(data.street);
 //  this.description = data.description;
 
-  this.address = ko.computed(function() {
-    return data.street + " " + data.city;
-  },this);
+  this.address = this.street + " " + this.city;
 
-  this.location = getlnglat(this.address);
+//console.log(this.address());
+//  this.location = null;//getlnglat(this.address());
+//  console.log(this.address());
 };
 
-var initialLocations = [
-  new Location({
-    "name": "Visitor Center",
-    "street": "799 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA"
-  }),
-  new Location({
-    "name": "Swamp Tour 2",
-    "street": "1037 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA"
-  }),
-  new Location({
-    "name": "Swamp Tour 3",
-    "street": "1037 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA"
-  }),
-  new Location({
-    "name": "Swamp Tour 4",
-    "street": "1037 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA"
-  }),
-  new Location({
-    "name": "Swamp Tour 5",
-    "street": "1037 Jean Lafitte Blvd.",
-    "city": "Lafitte, LA"
-  })
-];
-var ViewModel = function() {
-  var self = this;
+  var ViewModel = function() {
+     var self = this;
 
   this.locationlist = ko.observableArray([]);
   initialLocations.forEach(function(locationData){
   self.locationlist.push(new Location(locationData));
   });
 this.currentLocation = ko.observable(this.locationlist()[0]);
-console.log(console.log(this.locationlist()[1]));
+//console.log(console.log(this.locationlist()[1]));
 
 this.setLocation = function() {
   //TODO: do something with location
   console.log("setLoc");
 };
 };
+
 ko.applyBindings(new ViewModel());
 
 var map;
 var markers = [];
+
+
+//var marker;
 
 function initMap() {
   // Constructor creates a new map - only center and zoom are required.
@@ -69,22 +74,58 @@ function initMap() {
   var bounds = new google.maps.LatLngBounds();
 
   initialLocations.forEach(function(locationData) {
+    //console.log(locationData);
+  //  locationData.location = getlnglat(locationData.address);
+    //console.log(locationData.location);
+  //  console.log(locationData.address);
 
-    var latlng = {lat: locationData.lat, lng: locationData.lng};
-    var tit = locationData.name;
+//getLatLong(locationData.street + " " + locationData.city);
+//console.log(geoLocation);
 
-    var marker = new google.maps.Marker({
-      position: latlng,
-      map: map,
-      title: locationData.name,
-      id: initialLocations.indexOf(locationData)
+
+function getLatLong(address) {
+//  console.log('start');
+  var geocoder = new google.maps.Geocoder();
+  //  var address = document.getElementById('address').value;
+    geocoder.geocode( {'address': address}, function(results, status) {
+      console.log(results);
+     console.log(status);
+      if (status == 'OK') {
+
+        var marker = new google.maps.Marker({
+          position: results[0].geometry.location,
+          map: map,
+          title: locationData.name,
+          id: initialLocations.indexOf(locationData)
+        });
+        markers.push(marker);
+        bounds.extend(marker.position);
+
+        marker.addListener('click', function() {
+          populateInfoWindow(this, infowindow, locationData.name);
+        });
+    //    console.log('hello');
+        //  callback(results[0].geometry.location);
+          //console.log(geoLocation);
+        //return results[0].geometry.location[0];
+      //  var marker = new google.maps.Marker({
+      //      map: map,
+      //      position: results[0].geometry.location
+      //  });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
     });
-    markers.push(marker);
-    bounds.extend(marker.position);
+  }
 
-    marker.addListener('click', function() {
-      populateInfoWindow(this, infowindow, locationData.name);
-    });
+getLatLong(locationData.street + " " + locationData.city);
+  //while(geoLocation === undefined){
+
+//  }
+//  setMarker(locationData.street + " " + locationData.city,locationData.name);
+
+
+
   });
   map.fitBounds(bounds);
 
@@ -119,22 +160,48 @@ function hideLocations() {
   }
 }
 
+function getLatLong(address,callback) {
+//  console.log('start');
+  var geocoder = new google.maps.Geocoder();
+  //  var address = document.getElementById('address').value;
+    geocoder.geocode( {'address': address}, function(results, status) {
+    //  console.log(results);
+    //  console.log(status);
+      if (status == 'OK') {
+
+          callback(results[0].geometry.location);
+    //    console.log('hello');
+        //  callback(results[0].geometry.location);
+          //console.log(geoLocation);
+        //return results[0].geometry.location[0];
+      //  var marker = new google.maps.Marker({
+      //      map: map,
+      //      position: results[0].geometry.location
+      //  });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }
+
+
+/*
 function getlnglat(address) {
+  console.log("first");
   var geocoder = new google.maps.Geocoder();
 //  initialLocations.forEach(function(locationData) {
 //    var address = locationData.street + " " + locationData.city;
+
     geocoder.geocode(
-      {address: address,
-        componentRestrictions: {locality: 'Lafitte'
-      }, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
+      {address: address},
+      function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
           return results[0].geometry.location;
           //TODO: Enter code to return location
         }
         else {
-          console.log('We could not find that location' + address);
+          console.log('We could not find that location ' + address);
         }
-      }
-    });
-  });
-}
+      })
+    }
+*/
