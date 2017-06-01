@@ -121,7 +121,7 @@ var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll="+latlong+'&
         category: venue.categories[0].name,
         foursquareID: venue.id,
         location: {lat: venue.location.lat, lng: venue.location.lng},
-        iconLink: venue.categories[0].icon.prefix+"32"+venue.categories[0].icon.suffix
+        iconLink: venue.categories[0].icon.prefix+"bg_32"+venue.categories[0].icon.suffix
       }
       console.log("Venue Data:" + venueData);
 
@@ -170,7 +170,8 @@ for(var i = 0; i < locationList().length; i++){
     position: locationList()[i].location,
     map: map,
     title: locationList()[i].name(),
-    id: locationList().indexOf(locationList[i])
+    id: locationList().indexOf(locationList[i]),
+    icon: locationList()[i].iconLink
   });
   console.log("marker created");
   markers.push(marker);
