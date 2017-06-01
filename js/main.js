@@ -30,6 +30,10 @@ var Location = function(data) {
   this.name = ko.observable(data.name);
   this.city = ko.observable(data.city);
   this.street = ko.observable(data.street);
+  this.category = ko.observable(data.category);
+  this.foursquareID = data.foursqureID;
+  this.iconLink =  data.iconLink;
+  this.location = data.location;
 //  this.description = data.description;
 
   this.address = this.street + " " + this.city;
@@ -39,14 +43,70 @@ var Location = function(data) {
 //  console.log(this.address());
 };
 
+var locationList = ko.observableArray([]);
+
   var ViewModel = function() {
      var self = this;
 
-  this.locationlist = ko.observableArray([]);
-  initialLocations.forEach(function(locationData){
-  self.locationlist.push(new Location(locationData));
-  });
-this.currentLocation = ko.observable(this.locationlist()[0]);
+//  this.locationlist = ko.observableArray([]);
+
+//  function getFourSquareLocations() {
+  var clientID = "PGZR20FMKL3MDGHKVNZFGE1N5AK02NPUCUIVQ5YFALGYSV1M";
+  var clientSecret = "5LM1W4RDO2BUO24UFCLDEXFQM0DJULOMDVTRAWXC1PMSRGQQ";
+  var latlong = "29.739263,-90.126625";
+
+  var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll="+latlong+'&client_id='+clientID+'&client_secret='+clientSecret+'&v=20160108';
+console.log(foursquareUrl);
+    $.ajax({
+      url: foursquareUrl,
+      dataType: "json",
+      success: function(response) {
+        var venues = response.response.venues;
+        for (var i = 0; i < venues.length; i++) {
+          var venue = venues[i];
+        //  console.log(venue.location.city);
+          locationList.push(new Location({
+            name: venue.name,
+            street: venue.location.address,
+            city: venue.location.city,
+            category: venue.categories[0].name,
+            foursquareID: venue.id,
+            location: {lat: venue.location.lat, lng: venue.location.lng},
+            iconLink: venue.categories[0].icon.prefix+"32"+venue.categories[0].icon.suffix
+          }
+          ))
+        }
+      }
+    });
+    /*
+    $.getJSON(foursquareUrl, function(data) {
+      //$nytHeaderElem.text('New York Times Articles About' + city);
+
+      var venues = data.response.venues;
+      for (var i = 0; i < venues.length; i++) {
+        var venue = venues[i];
+        self.locationList.push(new Location({
+          name: venue.name,
+          street: venue.location.address,
+          city: venue.address.city,
+          category: venue.categories[0].pluralName,
+          foursquareID: venue.id,
+          location: {lat: venue.location.lat, lng: venue.location.lng},
+          iconLink: venue.categories[0].icon.prefix+"32"+vendor.categories[0].icon.suffix
+        }
+        ))
+      }
+    }).error(function(e) {
+      console.log('Error');
+    }); //error
+*/
+  //} //end function
+
+  //getFourSquareLocations();
+//  initialLocations.forEach(function(locationData){
+//  self.locationlist.push(new Location(locationData));
+//  });
+this.currentLocation = ko.observable(locationList[0]);
 //console.log(console.log(this.locationlist()[1]));
 
 this.setLocation = function() {
@@ -73,7 +133,23 @@ function initMap() {
   var infowindow = new google.maps.InfoWindow();
   bounds = new google.maps.LatLngBounds();
 
-  initialLocations.forEach(function(locationData) {
+for(var i = 0; i < locationList.length; i++){
+  var marker = new google.maps.Marker({
+    position: locationList[i].location,
+    map: map,
+    title: locationList[i].name,
+    id: locationList.indexOf(locationList[i])
+  });
+  markers.push(marker);
+  bounds.extend(results[0].geometry.location);
+  console.log(bounds);
+  marker.addListener('click', function() {
+    populateInfoWindow(this, infowindow, locationData.name);
+  });
+}
+map.fitBounds(bounds);
+
+//  initialLocations.forEach(function(locationData) {
     //console.log(locationData);
   //  locationData.location = getlnglat(locationData.address);
     //console.log(locationData.location);
@@ -86,7 +162,6 @@ function initMap() {
 function getLatLong(address) {
 //  console.log('start');
   var geocoder = new google.maps.Geocoder();
-  //  var address = document.getElementById('address').value;
     geocoder.geocode( {'address': address}, function(results, status) {
       console.log(results);
      console.log(status);
@@ -121,7 +196,7 @@ function getLatLong(address) {
 
   }
 
-getLatLong(locationData.street + " " + locationData.city);
+//getLatLong(locationData.street + " " + locationData.city);
   //while(geoLocation === undefined){
 
 //  }
@@ -129,7 +204,7 @@ getLatLong(locationData.street + " " + locationData.city);
 
 
 
-  });
+  //});
 
   console.log("map");
 
@@ -189,7 +264,6 @@ function getLatLong(address,callback) {
       }
     });
   }
-
 
 /*
 function getlnglat(address) {
