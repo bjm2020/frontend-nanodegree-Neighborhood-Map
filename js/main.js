@@ -45,39 +45,15 @@ var Location = function(data) {
 
 var locationList = ko.observableArray([]);
 
+
+
   var ViewModel = function() {
      var self = this;
 
 //  this.locationlist = ko.observableArray([]);
 
-//  function getFourSquareLocations() {
-  var clientID = "PGZR20FMKL3MDGHKVNZFGE1N5AK02NPUCUIVQ5YFALGYSV1M";
-  var clientSecret = "5LM1W4RDO2BUO24UFCLDEXFQM0DJULOMDVTRAWXC1PMSRGQQ";
-  var latlong = "29.739263,-90.126625";
+getFourSquareLocations();
 
-  var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll="+latlong+'&client_id='+clientID+'&client_secret='+clientSecret+'&v=20160108';
-console.log(foursquareUrl);
-    $.ajax({
-      url: foursquareUrl,
-      dataType: "json",
-      success: function(response) {
-        var venues = response.response.venues;
-        for (var i = 0; i < venues.length; i++) {
-          var venue = venues[i];
-        //  console.log(venue.location.city);
-          locationList.push(new Location({
-            name: venue.name,
-            street: venue.location.address,
-            city: venue.location.city,
-            category: venue.categories[0].name,
-            foursquareID: venue.id,
-            location: {lat: venue.location.lat, lng: venue.location.lng},
-            iconLink: venue.categories[0].icon.prefix+"32"+venue.categories[0].icon.suffix
-          }
-          ))
-        }
-      }
-    });
     /*
     $.getJSON(foursquareUrl, function(data) {
       //$nytHeaderElem.text('New York Times Articles About' + city);
@@ -117,11 +93,64 @@ this.setLocation = function() {
 
 ko.applyBindings(new ViewModel());
 
+
+
+
+
+//var marker;
+function getFourSquareLocations() {
+var clientID = "PGZR20FMKL3MDGHKVNZFGE1N5AK02NPUCUIVQ5YFALGYSV1M";
+var clientSecret = "5LM1W4RDO2BUO24UFCLDEXFQM0DJULOMDVTRAWXC1PMSRGQQ";
+var latlong = "29.739263,-90.126625"; //local town (Jean Lafitte) lat Lng coordinates
+console.log("begin foursquare data");
+var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll="+latlong+'&client_id='+clientID+'&client_secret='+clientSecret+'&v=20160108';
+
+  $.ajax({
+    url: foursquareUrl,
+    dataType: "json",
+    success: function(data) {
+      var venues = data.response.venues;
+      for (var i = 0; i < venues.length; i++) {
+        var venue = venues[i];
+        console.log(venue.name+venue.location.address+venue.location.city+venue.categories[0].name+venue.id+venue.location.lat+venue.location.lng);
+      //  console.log(venue.location.city);
+      var venueData = {
+        name: venue.name,
+        street: venue.location.address,
+        city: venue.location.city,
+        category: venue.categories[0].name,
+        foursquareID: venue.id,
+        location: {lat: venue.location.lat, lng: venue.location.lng},
+        iconLink: venue.categories[0].icon.prefix+"32"+venue.categories[0].icon.suffix
+      }
+      console.log("Venue Data:" + venueData);
+
+      locationList.push(new Location(venueData));
+
+      console.log("After Push:" + locationList);
+/*
+        locationList.push(new Location({
+          name: venue.name,
+          street: venue.location.address,
+          city: venue.location.city,
+          category: venue.categories[0].name,
+          foursquareID: venue.id,
+          location: {lat: venue.location.lat, lng: venue.location.lng},
+          iconLink: venue.categories[0].icon.prefix+"32"+venue.categories[0].icon.suffix
+        })); */
+
+console.log(locationList[i]);
+
+
+      }
+      startApp();
+    }
+  });
+}
+
 var map;
 var markers = [];
 var bounds;
-
-//var marker;
 
 function initMap() {
   // Constructor creates a new map - only center and zoom are required.
@@ -129,23 +158,29 @@ function initMap() {
     center: {lat: 40.7413549, lng: -73.9980244},
     zoom: 13
   });
-
+  console.log("init map");
   var infowindow = new google.maps.InfoWindow();
   bounds = new google.maps.LatLngBounds();
-
-for(var i = 0; i < locationList.length; i++){
+console.log(locationList().length);
+console.log("Object:" + locationList()[0].location);
+console.log(locationList()[1].name);
+console.log(typeof locationList()[1]);
+for(var i = 0; i < locationList().length; i++){
   var marker = new google.maps.Marker({
-    position: locationList[i].location,
+    position: locationList()[i].location,
     map: map,
-    title: locationList[i].name,
-    id: locationList.indexOf(locationList[i])
+    title: locationList()[i].name(),
+    id: locationList().indexOf(locationList[i])
   });
+  console.log("marker created");
   markers.push(marker);
-  bounds.extend(results[0].geometry.location);
-  console.log(bounds);
+  bounds.extend(marker.position);
+  console.log("extended");
+  //console.log(bounds);
   marker.addListener('click', function() {
-    populateInfoWindow(this, infowindow, locationData.name);
+    populateInfoWindow(this, infowindow, locationList()[i].name());
   });
+
 }
 map.fitBounds(bounds);
 
@@ -206,7 +241,7 @@ function getLatLong(address) {
 
   //});
 
-  console.log("map");
+
 
   document.getElementById('show-listings').addEventListener('click', showLocations);
   document.getElementById('hide-listings').addEventListener('click', hideLocations);
@@ -214,7 +249,9 @@ function getLatLong(address) {
 
 }
 
+
 function populateInfoWindow(marker, infowindow, content) {
+  console.log("populate");
   if(infowindow.marker != marker) {
     infowindow.marker = marker;
     infowindow.setContent(content);
@@ -264,6 +301,13 @@ function getLatLong(address,callback) {
       }
     });
   }
+
+function startApp() {
+//  ko.applyBindings(new ViewModel());
+  initMap();
+
+}
+
 
 /*
 function getlnglat(address) {
