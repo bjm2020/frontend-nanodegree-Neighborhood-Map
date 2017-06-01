@@ -177,13 +177,18 @@ for(var i = 0; i < locationList().length; i++){
   bounds.extend(marker.position);
   console.log("extended");
   //console.log(bounds);
+  console.log(i);
+  var name = locationList()[i].name();
+  console.log(name);
   marker.addListener('click', function() {
-    populateInfoWindow(this, infowindow, locationList()[i].name());
+    console.log("listener");
+    populateInfoWindow(this, infowindow, this.title)
   });
 
 }
-map.fitBounds(bounds);
 
+map.fitBounds(bounds);
+console.log("fitbounds");
 //  initialLocations.forEach(function(locationData) {
     //console.log(locationData);
   //  locationData.location = getlnglat(locationData.address);
@@ -212,7 +217,7 @@ function getLatLong(address) {
         bounds.extend(results[0].geometry.location);
         console.log(bounds);
         marker.addListener('click', function() {
-          populateInfoWindow(this, infowindow, locationData.name);
+          populateInfoWindow(this, infowindow, this.title);
         });
 
         map.fitBounds(bounds);
