@@ -8,6 +8,7 @@ var Location = function(data) {
   this.iconLink =  data.iconLink;
   this.location = data.location;
 
+  this.markerID = 0;
 
   this.address = this.street + " " + this.city;
 
@@ -20,11 +21,11 @@ var locationList = ko.observableArray([]);
   var ViewModel = function() {
      var self = this;
 
-;
 
 getFourSquareLocations();
 
-this.currentLocation = ko.observable(locationList[0]);
+this.currentLocation = ko.observable(locationList()[0]);
+
 
 //Stores Value of Drop Down List Category Filter.
 this.selectedCategory = ko.observable();
@@ -70,12 +71,23 @@ this.selectionChanged = function() {
 
 this.setLocation = function() {
   //TODO: do something with location
+  if(typeof self.currentLocation() === "undefined") {
+    self.currentLocation(locationList()[0]);
+  }
+else {
+
+}
+  for(var i=0;i<markers.length;i++){
+    console.log(self.currentLocation().markerID);
+    if(markers[i].id === self.currentLocation().marker);
+      google.maps.event.trigger(markers[i], 'click');
+  }
   console.log("setLoc");
 };
 };
 
 ko.applyBindings(new ViewModel());
-
+console.log(locationList().length);
 
 function getFourSquareLocations() {
 var clientID = "PGZR20FMKL3MDGHKVNZFGE1N5AK02NPUCUIVQ5YFALGYSV1M";
@@ -107,6 +119,7 @@ var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll="+latlong+'&
 
       }
       startApp();
+
     }
   });
 }
@@ -117,6 +130,7 @@ var bounds;
 
 function initMap() {
   // Constructor creates a new map - only center and zoom are required.
+
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 40.7413549, lng: -73.9980244},
     zoom: 13
@@ -129,9 +143,12 @@ for(var i = 0; i < locationList().length; i++){
     position: locationList()[i].location,
     map: map,
     title: locationList()[i].name(),
-    id: locationList()[i].category(),
-    icon: locationList()[i].iconLink
+    id: i,
+   icon: locationList()[i].iconLink
   });
+
+  locationList()[i].markerID = marker.id;
+
 
   markers.push(marker);
   bounds.extend(marker.position);
@@ -140,7 +157,9 @@ for(var i = 0; i < locationList().length; i++){
 
   marker.addListener('click', function() {
 
-    populateInfoWindow(this, infowindow, this.title)
+    var html = "<div id='content holder'><div id = 'picture'></div><div id = 'info'><div id = 'venue'></div></div><div id = 'review'></div></div>";
+
+    populateInfoWindow(this, infowindow, this.title);
   });
 
 }
@@ -189,7 +208,7 @@ function populateInfoWindow(marker, infowindow, content) {
 
   if(infowindow.marker != marker) {
     infowindow.marker = marker;
-    infowindow.setContent(content);
+    infowindow.setContent($('#info-window').html());
     infowindow.open(map, marker);
 
     infowindow.addListener('closeclick', function() {

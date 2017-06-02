@@ -33,9 +33,25 @@
       </div>
 </div>
 
+<div id="info-window" data-bind="with: currentLocation" style="display:none;">
+  <div id="contentholder">
+    <div id="picture">
+    </div>
+    <div id="info">
+      <div id="venue">
+        <div id="name">
+          <h3 data-bind = "text:name"></h3>
+          <p data-bind="text:category"></p>
+          <p data-bind="text:address"></p>
+        </div>
+      </div> //venue
+    </div>
+  </div>
+</div>
 
 
 
+https://discussions.udacity.com/t/knockout-binding-from-infowindow/189235/3
 
 
     <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
