@@ -20,14 +20,14 @@
     </div>
 
       <div id="overlay" class="sidebar-nav">
-        <select id="filter" data-bind="options: ViewModel.uniqueCategories,
+        <select id="filter" data-bind="options: uniqueCategories,
           optionsCaption: 'Filter',
-          value: ViewModel.selectedCategory,
+          value: selectedCategory,
           event: { change: selectionChanged }"
         </select>
               <input id="show-listings" type="button" value = "Show Listings" />
               <input id="hide-listings" type="button" value = "Hide Listings" />
-                      <ul data-bind= "foreach:locationList" class="sidebar-nav">
+                      <ul data-bind= "foreach:filteredLocations" class="sidebar-nav">
                         <li data-bind= "text:name, click:$parent.setLocation" class="location sidebar-brand"></li>
                       </ul>
       </div>
