@@ -44,12 +44,12 @@ self.uniqueCategories = ko.dependentObservable(function() {
   return ko.utils.arrayGetDistinctValues(self.justCategories()).sort();
 });
 
-this.filteredLocations = ko.computed(function(category) {
-  if(typeof category  === 'undefined')  {
+this.filteredLocations = ko.computed(function() {
+  if(typeof self.selectedCategory()  === 'undefined')  {
     return locationList();
   }
   return ko.utils.arrayFilter(locationList(), function(location) {
-    return location.category() == category;
+    return location.category() == self.selectedCategory();
   })
 });
 
