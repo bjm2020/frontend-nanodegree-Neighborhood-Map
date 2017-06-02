@@ -31,6 +31,7 @@ var Location = function(data) {
   this.city = ko.observable(data.city);
   this.street = ko.observable(data.street);
   this.category = ko.observable(data.category);
+  this.categoryID = data.categoryID;
   this.foursquareID = data.foursqureID;
   this.iconLink =  data.iconLink;
   this.location = data.location;
@@ -44,7 +45,7 @@ var Location = function(data) {
 };
 
 var locationList = ko.observableArray([]);
-
+//var categories = ko.observableArray([]);
 
 
   var ViewModel = function() {
@@ -53,6 +54,17 @@ var locationList = ko.observableArray([]);
 //  this.locationlist = ko.observableArray([]);
 
 getFourSquareLocations();
+
+ViewModel.justCategories = ko.computed(function() {
+  var categories = ko.utils.arrayMap(locationList(), function(location) {
+    return location.category();
+  });
+  return categories.sort();
+}, this);
+
+ViewModel.uniqueCategories = ko.dependentObservable(function() {
+  return ko.utils.arrayGetDistinctValues(ViewModel.justCategories()).sort();
+});
 
     /*
     $.getJSON(foursquareUrl, function(data) {
@@ -83,6 +95,27 @@ getFourSquareLocations();
 //  self.locationlist.push(new Location(locationData));
 //  });
 this.currentLocation = ko.observable(locationList[0]);
+this.selectedCategory = ko.observable();
+//console.log(selectedCategory());
+//this.selectedCategory.subscribe(function(selectedCategory){
+//  console.log(selectedCategory);
+//  hideLocations(selectedCategory);
+//});
+
+this.selectionChanged = function() {
+  //console.log(self.selectedCategory);
+  console.log(ViewModel.selectedCategory);
+  if("undefined" === typeof ViewModel.selectedCategory) {
+    console.log("hello");
+    showLocations();
+  }
+  else {
+  showLocations();
+  hideLocations(ViewModel.selectedCategory);
+}
+}
+
+//console.log("selectedCategory");
 //console.log(console.log(this.locationlist()[1]));
 
 this.setLocation = function() {
@@ -119,6 +152,7 @@ var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll="+latlong+'&
         street: venue.location.address,
         city: venue.location.city,
         category: venue.categories[0].name,
+        categoryID: venue.categories[0].id,
         foursquareID: venue.id,
         location: {lat: venue.location.lat, lng: venue.location.lng},
         iconLink: venue.categories[0].icon.prefix+"bg_32"+venue.categories[0].icon.suffix
@@ -126,6 +160,7 @@ var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll="+latlong+'&
       console.log("Venue Data:" + venueData);
 
       locationList.push(new Location(venueData));
+    //  categories.push(venue.categories[0].name);
 
       console.log("After Push:" + locationList);
 /*
@@ -170,7 +205,7 @@ for(var i = 0; i < locationList().length; i++){
     position: locationList()[i].location,
     map: map,
     title: locationList()[i].name(),
-    id: locationList().indexOf(locationList[i]),
+    id: locationList()[i].category(),
     icon: locationList()[i].iconLink
   });
   console.log("marker created");
@@ -270,6 +305,7 @@ function populateInfoWindow(marker, infowindow, content) {
 }
 
 function showLocations() {
+  console.log("show");
   var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
@@ -278,8 +314,11 @@ function showLocations() {
   map.fitBounds(bounds);
 }
 
-function hideLocations() {
+function hideLocations(id) {
+
   for (var i = 0; i < markers.length; i++) {
+  //  console.log("id" + " " + markers[i].id);
+  if(markers[i].id !== id)
     markers[i].setMap(null);
   }
 }
