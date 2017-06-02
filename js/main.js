@@ -75,7 +75,11 @@ this.setLocation = function() {
     self.currentLocation(locationList()[0]);
   }
 else {
-
+  for(var i=0; i < locationList().length;i++){
+    if(locationList[i].name === ){
+      self.currentLocation(locationList()[i]);
+    }
+  }
 }
   for(var i=0;i<markers.length;i++){
     console.log(self.currentLocation().markerID);
