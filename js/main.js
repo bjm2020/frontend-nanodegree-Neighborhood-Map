@@ -53,6 +53,8 @@ this.filteredLocations = ko.computed(function(category) {
   })
 });
 
+//Show and Hide Map Markers based on selected category
+
 this.selectionChanged = function() {
 
   if("undefined" === typeof this.selectedCategory()) {
