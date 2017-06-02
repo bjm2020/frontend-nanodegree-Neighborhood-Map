@@ -28,7 +28,7 @@
               <input id="show-listings" type="button" value = "Show Listings" />
               <input id="hide-listings" type="button" value = "Hide Listings" />
                       <ul data-bind= "foreach:filteredLocations" class="sidebar-nav">
-                        <li data-bind= "text:name, click:$parent.setLocation()" class="location sidebar-brand"></li>
+                        <li data-bind= "text:name, click:$parent.setLocation" class="location sidebar-brand"></li>
                       </ul>
       </div>
 </div>

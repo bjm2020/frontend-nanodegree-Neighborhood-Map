@@ -69,15 +69,18 @@ this.selectionChanged = function() {
 }
 
 
-this.setLocation = function() {
+this.setLocation = function(param) {
+
   //TODO: do something with location
   if(typeof self.currentLocation() === "undefined") {
     self.currentLocation(locationList()[0]);
   }
 else {
+  console.log(locationList()[i].name);
   for(var i=0; i < locationList().length;i++){
-    if(locationList[i].name === ){
+    if(locationList()[i].name === param){
       self.currentLocation(locationList()[i]);
+
     }
   }
 }
