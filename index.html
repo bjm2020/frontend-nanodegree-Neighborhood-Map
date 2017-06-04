@@ -1,43 +1,60 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-
+  <link rel='stylesheet' href="css/main.css">
   <script type= 'text/javascript' src="js/jquery-3.2.1.min.js"</script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <link rel='stylesheet' href="css/main.css">
+
     <script>function googleLoaded() {
 
     }</script>
   </head>
   <body>
+<nav class="navbar navbar-default nav-bar col-sm-3 col-md-3">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span> Open/Close </span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <h2 class="title">Town Of Jean Lafitte</h2>
+  </div>
 
+  <div class="collapse navbar-collapse col-sm-3 col-md-3 sidebar" id="Locations">
 
-    <div id = "wrapper">
+      <select class = "form-control" id="filter" data-bind="options: uniqueCategories,
+        optionsCaption: 'Filter',
+        value: selectedCategory,
+        event: { change: selectionChanged }">
+        <span class="caret"></span>
+      </select>
+            <input id="show-listings" type="button" value = "Show Listings" />
+            <input id="hide-listings" type="button" value = "Hide Listings" />
+                    <ul data-bind= "foreach:filteredLocations" class="list-unstyled locationlist">
+                      <li data-bind= "text:name, click:$parent.setLocation" class="location sidebar-brand"></li>
+                    </ul>
+
+  </div>
+</div>
+</nav>
+
 
     <div id="map">
     </div>
 
-      <div id="overlay" class="sidebar-nav">
-        <select id="filter" data-bind="options: uniqueCategories,
-          optionsCaption: 'Filter',
-          value: selectedCategory,
-          event: { change: selectionChanged }"
-        </select>
-              <input id="show-listings" type="button" value = "Show Listings" />
-              <input id="hide-listings" type="button" value = "Hide Listings" />
-                      <ul data-bind= "foreach:filteredLocations" class="sidebar-nav">
-                        <li data-bind= "text:name, click:$parent.setLocation" class="location sidebar-brand"></li>
-                      </ul>
-      </div>
-</div>
+
+
 
 
   <div id="info-window-test" data-bind="with: currentLocation" style="display: none;">
   <div id="contentholder">
     <div id="picture">
       <img data-bind="attr:{src:bestPhotoLink}"/>
+      <h3 data-bind="text: rating"</h3>
     </div>
     <div id="info">
       <div id="venue">

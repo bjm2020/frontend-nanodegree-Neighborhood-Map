@@ -36,7 +36,7 @@ Location.prototype.addExtraData = function(data) {
   this.ratingColor(data.ratingColor);
   this.latestTip(data.latestTip);
   this.photos(data.photos);
-  this.bestPhotoLink(data.bestPhotoLink);
+//  this.bestPhotoLink(data.bestPhotoLink);
 //  console.log(this.bestPhotoLink());
 }
 
@@ -59,19 +59,19 @@ Location.prototype.addExtraData = function(data) {
              var venues = data.response.venues;
              for (var i = 0; i < venues.length; i++) {
                var venue = venues[i];
-               console.log(venue.id);
+            //   console.log(venue.id);
             //  console.log(venue.name);
              var venueData = {
                name: venue.name,
                street: venue.location.address,
                city: venue.location.city,
-               category: venue.categories[0].name,
+               category: venue.categories[0].pluralName,
                categoryID: venue.categories[0].id,
                foursquareID: venue.id,
                location: {lat: venue.location.lat, lng: venue.location.lng},
                iconLink: venue.categories[0].icon.prefix+"bg_32"+venue.categories[0].icon.suffix
              } //venue data
-          //   console.log(venueData);
+             console.log(venueData);
              self.locationList.push(new Location(venueData));
 
            } //for loop
@@ -130,6 +130,7 @@ Location.prototype.addExtraData = function(data) {
          console.log(self.locationList()[i]);
 
        } //for loop
+
 startApp();
         }); //ajax
 
