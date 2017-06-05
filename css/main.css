@@ -4,14 +4,64 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  scrollbar-face-color: #e1c69b;
 }
+
 
 #map {
   height: 100%;
   width: auto;
+
 }
 
+.container-fluid {
+  height: 100vh;
+  overflow: auto;
+
+}
 .locationlist {
 	margin: 10px 0px;
 	font-weight: bold;
+}
+
+/* MEDIA QUERY FOR MOBILE */
+@media screen and (max-width: 480px) {
+	.navbar {
+		margin-bottom: 0px;
+	}
+
+	.main-title {
+		margin-top: 25px;
+		margin-left: 0px;
+		line-height: 0px;
+	}
+
+	#search-input {
+    	margin: 10px 20px 0px 0px;
+    	padding: 10px 80px 5px 10px;
+	}
+
+	#hk {
+		margin-left: 0px;
+	    margin-bottom: 15px;
+	    letter-spacing: 0.5px;
+	}
+
+	.buttons {
+		margin-top: 15px;
+	}
+
+}
+
+/* MEDIA QUERY FOR TABLET */
+@media (min-width: 480px) and (max-width: 768px) {
+	#map {
+		height: 100%;
+		background-color: #222;
+		color: #fff;
+	}
+	.nav-bar {
+	    background-color: #ecf0f1;
+	    width: 50%;
+	}
 }

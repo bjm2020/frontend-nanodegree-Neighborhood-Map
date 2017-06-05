@@ -36,7 +36,7 @@ Location.prototype.addExtraData = function(data) {
   this.ratingColor(data.ratingColor);
   this.latestTip(data.latestTip);
   this.photos(data.photos);
-//  this.bestPhotoLink(data.bestPhotoLink);
+  this.bestPhotoLink(data.bestPhotoLink);
 //  console.log(this.bestPhotoLink());
 }
 
@@ -45,6 +45,9 @@ Location.prototype.addExtraData = function(data) {
 
      this.locationList = ko.observableArray([]);
      self.currentLocation = ko.observable(self.locationList()[0]);
+     self.showGoogleAlert = ko.observable(false);
+     self.alertText = ko.observable();
+
      self.getFourSquareLocations = function() {
        var clientID = "PGZR20FMKL3MDGHKVNZFGE1N5AK02NPUCUIVQ5YFALGYSV1M";
        var clientSecret = "5LM1W4RDO2BUO24UFCLDEXFQM0DJULOMDVTRAWXC1PMSRGQQ";
@@ -77,22 +80,31 @@ Location.prototype.addExtraData = function(data) {
            } //for loop
             // console.log(self.locationList().length);
 //startApp();
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            self.alertText(jqXHR.status + " " + textStatus + " " + errorThrown);
+            console.log(jqXHR);
+            self.showGoogleAlert(true);
+
           } //success
 
         }).done(function() {
           console.log("start 2nd ajax");
           console.log(self.locationList()[0].foursquareID);
           console.log(self.locationList().length);
-           for (var i = 0; i < self.locationList().length;i++) {
-            console.log("start loop");
-            var index = i;
+          self.locationList().forEach(function(location) {
+
+
+          // for (var i = 0; i < self.locationList().length;i++) {
+          //  console.log("start loop");
+        //    var index = i;
            $.ajax({
-             url: 'https://api.foursquare.com/v2/venues/'+self.locationList()[i].foursquareID+'?&client_id='+clientID+'&client_secret='+clientSecret+'&v=20160108',
+             url: 'https://api.foursquare.com/v2/venues/'+location.foursquareID+'?&client_id='+clientID+'&client_secret='+clientSecret+'&v=20160108',
              dataType: "json",
              success: function(data) {
                var extras = data.response.venue;
                var latestTip;
-              console.log(extras.rating);
+              //console.log(extras.rating);
               var rating;
               var ratingColor;
               var bestPhotoLink;
@@ -123,13 +135,13 @@ Location.prototype.addExtraData = function(data) {
                photos: extras.photos,
                latestTip: latestTip
            } //extraData
-            self.locationList()[index].addExtraData(extraData);
+            location.addExtraData(extraData);
          } //success
        }); //ajax
 
-         console.log(self.locationList()[i]);
-
-       } //for loop
+      //   console.log(self.locationList()[i]);
+  });
+       //} //for loop
 
 startApp();
         }); //ajax
@@ -143,40 +155,73 @@ var markers = [];
 var bounds;
 
 self.initMap = function() {
+
+var styledMapType = new google.maps.StyledMapType(
+  [{"featureType":"all","elementType":"all","stylers":[{"color":"#d4b78f"},{"visibility":"on"}]},{"featureType":"all","elementType":"geometry.stroke","stylers":[{"color":"#0d0000"},{"visibility":"on"},{"weight":1}]},{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#98290e"},{"visibility":"on"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"administrative.province","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"administrative.locality","elementType":"labels.text.fill","stylers":[{"color":"#98290e"},{"visibility":"on"}]},{"featureType":"administrative.locality","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"administrative.neighborhood","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#d4b78f"},{"visibility":"on"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.park","elementType":"all","stylers":[{"color":"#c4b17e"},{"visibility":"on"}]},{"featureType":"road","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"color":"#0d0000"},{"visibility":"on"}]},{"featureType":"road.highway","elementType":"labels.text.stroke","stylers":[{"color":"#d9be94"},{"visibility":"on"}]},{"featureType":"road.highway.controlled_access","elementType":"geometry.fill","stylers":[{"color":"#0d0000"},{"visibility":"off"},{"weight":2}]},{"featureType":"road.arterial","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#a8ac91"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#98290e"},{"visibility":"on"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]}],
+  {name:'Pirate_Styled_Map'});
+
   // Constructor creates a new map - only center and zoom are required.
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 40.7413549, lng: -73.9980244},
-    zoom: 13
+    zoom: 13,
+    mapTypeControlOptions: {
+            mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
+                    'Pirate_Styled_Map']
+          }
   });
+
+  //Associate the styled map with the MapTypeId and set it to display.
+        map.mapTypes.set('Pirate_Styled_Map', styledMapType);
+        map.setMapTypeId('Pirate_Styled_Map');
 
   var infowindow = new google.maps.InfoWindow();
   bounds = new google.maps.LatLngBounds();
-for(var i = 0; i < self.locationList().length; i++){
+  self.locationList().forEach(function(location) {
+
+
+//for(var i = 0; i < self.locationList().length; i++){
   var marker = new google.maps.Marker({
-    position: self.locationList()[i].location,
+    position: location.location,
     map: map,
-    title: self.locationList()[i].name(),
-    id: i,
-   icon: self.locationList()[i].iconLink
+    title: location.name(),
+   icon: location.iconLink
   });
 
   //locationList()[i].markerID = marker.id;
-  self.locationList()[i].marker = marker;
+  location.marker = marker;
 //  console.log(locationList()[i].marker);
   markers.push(marker);
   bounds.extend(marker.position);
 //  console.log(markers);
-  var name = self.locationList()[i].name();
+  var name = location.name();
 
   marker.addListener('click', function() {
-    console.log("marker click");
-    var html = "<div id='content holder'><div id = 'picture'></div><div id = 'info'><div id = 'venue'></div></div><div id = 'review'></div></div>";
+  //  console.log("marker click");
+  //  console.log(location);
+    toggleBounce();
+    self.currentLocation(location);
+
+  //  console.log(self.currentLocation());
+//    var html = "<div id='content holder'><div id = 'picture'></div><div id = 'info'><div id = 'venue'></div></div><div id = 'review'></div></div>";
     //self.currentLocation(self.locationList()[i]);
     populateInfoWindow(this, infowindow, name);
   });
 
-}
+  function toggleBounce() {
+
+    self.locationList().forEach(function(location) {
+      location.marker.setAnimation(null);
+    });
+
+          if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+          } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+          }
+        }
+
+});//}
 
 map.fitBounds(bounds);
 
@@ -186,13 +231,14 @@ function populateInfoWindow(marker, infowindow, content) {
 
   if(infowindow.marker != marker) {
     infowindow.marker = marker;
-    infowindow.setContent($('#info-window-test').html());
+    infowindow.setContent($('#info-window').html());
   //  console.log(self.currentLocation());
   //  infowindow.setContent(content);
     infowindow.open(map, marker);
 
     infowindow.addListener('closeclick', function() {
       infowindow.marker = null;
+      marker.setAnimation(null);
     });
   }
 }
@@ -217,11 +263,6 @@ function hideLocations(id) {
 
 
 
-self.currentLocation.subscribe(function(newValue) {
-     if (window.console && console.log) {
-         console.log(++this.triggeredCount, "Current Location triggered with new value", newValue);
-     }
-   });
 //Stores Value of Drop Down List Category Filter.
 this.selectedCategory = ko.observable();
 
@@ -316,3 +357,9 @@ function startApp() {
   model.initMap();
 
 };
+
+function mapsError() {
+model.showGoogleAlert(true);
+model.alertText("Oops! Google Maps Has Encountered An Error.");
+
+}
