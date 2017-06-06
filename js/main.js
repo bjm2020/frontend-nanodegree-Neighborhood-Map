@@ -14,8 +14,21 @@ var Location = function(data) {
     this.marker;
 
 
-    this.address = this.street() + " " + this.city();
+    this.address = function() {
+      if(typeof this.street() === "undefined") {
+        this.street("");
+      }
+      if(typeof this.city() === "undefined") {
+        this.city("");
+      }
+      if(this.street() === "" && this.city() === "") {
+        return "No Address Available";
+      }
+      else {
+    return this.street() + " " + this.city();
+    }
 };
+}
 
 //Add Extra Venue Data to Location From Foursquare API
 Location.prototype.addExtraData = function(data) {
@@ -258,6 +271,11 @@ var ViewModel = function() {
 
         map.fitBounds(bounds);
 
+        //Event Listener Fit Bounds On Map Resize
+        google.maps.event.addDomListener(window,'resize', function() {
+          map.fitBounds(bounds);
+        });
+
     };
 
     //Populate the info window with custom content from the Foursquare API.
@@ -277,7 +295,7 @@ var ViewModel = function() {
             '    </div>' +
             '  <div class="iw-description">' +
             '      <h5> Address: </h5>' +
-            '      <span>' + self.currentLocation().address + '</span>' +
+            '      <span>' + self.currentLocation().address() + '</span>' +
             '    </div>' +
             '  </div>' +
             ' <div>' +
@@ -302,7 +320,7 @@ var ViewModel = function() {
 
         var bounds = new google.maps.LatLngBounds();
         for (var i = 0; i < markers.length; i++) {
-            markers[i].setMap(map);
+            markers[i].setVisible(true);
             bounds.extend(markers[i].position);
         }
         map.fitBounds(bounds);
@@ -313,7 +331,7 @@ var ViewModel = function() {
 
         self.locationList().forEach(function(location) {
             if (self.selectedCategory() != location.category())
-                location.marker.setMap(null);
+                location.marker.setVisible(false);
         });
 
     }
@@ -334,7 +352,7 @@ var ViewModel = function() {
     //Filter JustCategories to retrieve only Unique Values:
     //Populates unique categories in Drop Down Filter List.
 
-    self.uniqueCategories = ko.dependentObservable(function() {
+    self.uniqueCategories = ko.computed(function() {
         return ko.utils.arrayGetDistinctValues(self.justCategories()).sort();
     });
 

@@ -2,20 +2,9 @@
 <html>
    <head>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-      <script type= 'text/javascript' src="js/jquery-3.2.1.min.js"</script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
       <link rel='stylesheet' href="css/main.min.css">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta charset="UTF-8">
-      <script>
-         $(document).ready(function () {
-
-             $('#sidebarCollapse').on('click', function () {
-                 $('#sidebar').toggleClass('active');
-             });
-
-         });
-      </script>
 
    </head>
    <body>
@@ -49,8 +38,19 @@
             </div>
          </div>
       </div>
-      <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
-      <script type='text/javascript' src='js/main.js'></script>
+      <script  src="js/jquery-3.2.1.min.js"</script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script>
+         $(document).ready(function () {
+
+             $('#sidebarCollapse').on('click', function () {
+                 $('#sidebar').toggleClass('active');
+             });
+
+         });
+      </script>
+      <script src='js/knockout-3.4.2.js'></script>
+      <script src='js/main.min.js'></script>
       <script async defer
          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCtGdgazRgqVrJfM61ozqT-FqT_rsqFWQU&v=3&callback=startApp" onerror="googleError()"></script>
    </body>
