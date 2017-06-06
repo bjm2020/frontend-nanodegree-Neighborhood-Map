@@ -1,87 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script type= 'text/javascript' src="js/jquery-3.2.1.min.js"</script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <link rel='stylesheet' href="css/main.css">
-<script>
-  $(document).ready(function () {
+   <head>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script type= 'text/javascript' src="js/jquery-3.2.1.min.js"</script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <link rel='stylesheet' href="css/main.min.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="UTF-8">
+      <script>
+         $(document).ready(function () {
 
-      $('#sidebarCollapse').on('click', function () {
-          $('#sidebar').toggleClass('active');
-      });
+             $('#sidebarCollapse').on('click', function () {
+                 $('#sidebar').toggleClass('active');
+             });
 
-  });
-  </script>
-    <script>function googleLoaded() {
-
-    }</script>
-  </head>
-  <body>
-<div class = "wrapper">
-
-<nav id="sidebar">
-
-  <div class="sidebar-header">
-    <h3>My Neighborhood Map</h3>
-  </div>
-  <select class = "form-control" id="filter" data-bind="options: uniqueCategories,
-    optionsCaption: 'Filter',
-    value: selectedCategory,
-    event: { change: selectionChanged }"></select>
-
-    <ul data-bind= "foreach:filteredLocations" class="list-group locationlist" id="locationList">
-      <a href= "#" data-bind= "text:name, click:$parent.setLocation" class="list-group-item list-group-item-action" id="Location"></a>
-    </ul>
-</nav>
-
-
-    <div class="content">
-      <div class="transparent transparent-button">
-      <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
-            <i class="glyphicon glyphicon-align-left"></i>
-            Toggle Sidebar
-        </button>
+         });
+      </script>
+      <script>function googleLoaded() {
+         }
+      </script>
+   </head>
+   <body>
+      <div class = "wrapper">
+         <nav id="sidebar">
+            <div class="sidebar-header">
+               <h3>My Neighborhood Map</h3>
+            </div>
+            <select class = "form-control" id="filter" data-bind="options: uniqueCategories,
+               optionsCaption: 'Filter',
+               value: selectedCategory,
+               event: { change: selectionChanged }"></select>
+            <ul data-bind= "foreach:filteredLocations" class="list-group locationlist" id="locationList">
+               <a href= "#" data-bind= "text:name, click:$parent.setLocation" class="list-group-item list-group-item-action" id="Location"></a>
+            </ul>
+         </nav>
+         <div class="content">
+            <div class="transparent transparent-button">
+               <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+               <i class="glyphicon glyphicon-align-left"></i>
+               Toggle Sidebar
+               </button>
+            </div>
+            <div id="map">
+            </div>
+            <div class="transparent transparent-foursquare">
+               <img class="poweredbyfoursquare" src="img/poweredbyfoursquare.png">
+               <div class="alert alert-warning" data-bind="visible: showGoogleAlert">
+                  <span data-bind="text: alertText"></span>
+               </div>
+            </div>
+         </div>
       </div>
-                      <div id="map">
-                  </div>
-        <div class="transparent transparent-foursquare">
-          <img class="poweredbyfoursquare" src="img/poweredbyfoursquare.png">
-
-          <div class="alert alert-warning" data-bind="visible: showGoogleAlert">
-            <span data-bind="text: alertText"></span>
-          </div>
-        </div>
-
-  </div>
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
-    <script type='text/javascript' src='js/main.js'></script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCtGdgazRgqVrJfM61ozqT-FqT_rsqFWQU&v=3&callback=googleLoaded" onerror="mapsError()">
-    </script>
-
-
-  </body>
-  </html>
+      <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
+      <script type='text/javascript' src='js/main.min.js'></script>
+      <script async defer
+         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCtGdgazRgqVrJfM61ozqT-FqT_rsqFWQU&v=3&callback=googleLoaded" onerror="mapsError()"></script>
+   </body>
+</html>
