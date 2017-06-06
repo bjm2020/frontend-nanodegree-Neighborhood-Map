@@ -17,16 +17,6 @@
 
   this.marker;
 
-  this.bestPhotoLink.subscribe(function(newValue) {
-       if (window.console && console.log) {
-           console.log(++this.triggeredCount, "firstName triggered with new value", newValue);
-       }
-     });
-
-
-
-  //this.markerID = 0;
-
   this.address = this.street() + " " + this.city();
 
 }
@@ -157,7 +147,7 @@ var bounds;
 self.initMap = function() {
 
 var styledMapType = new google.maps.StyledMapType(
-  [{"featureType":"all","elementType":"all","stylers":[{"color":"#d4b78f"},{"visibility":"on"}]},{"featureType":"all","elementType":"geometry.stroke","stylers":[{"color":"#0d0000"},{"visibility":"on"},{"weight":1}]},{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#98290e"},{"visibility":"on"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"administrative.province","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"administrative.locality","elementType":"labels.text.fill","stylers":[{"color":"#98290e"},{"visibility":"on"}]},{"featureType":"administrative.locality","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"administrative.neighborhood","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#d4b78f"},{"visibility":"on"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.park","elementType":"all","stylers":[{"color":"#c4b17e"},{"visibility":"on"}]},{"featureType":"road","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"color":"#0d0000"},{"visibility":"on"}]},{"featureType":"road.highway","elementType":"labels.text.stroke","stylers":[{"color":"#d9be94"},{"visibility":"on"}]},{"featureType":"road.highway.controlled_access","elementType":"geometry.fill","stylers":[{"color":"#0d0000"},{"visibility":"off"},{"weight":2}]},{"featureType":"road.arterial","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#a8ac91"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#98290e"},{"visibility":"on"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]}],
+  [{"featureType":"all","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"poi.park","elementType":"geometry.fill","stylers":[{"color":"#aadd55"}]},{"featureType":"road.highway","elementType":"labels","stylers":[{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"road.local","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"color":"#0099dd"}]}],
   {name:'Pirate_Styled_Map'});
 
   // Constructor creates a new map - only center and zoom are required.
@@ -175,7 +165,9 @@ var styledMapType = new google.maps.StyledMapType(
         map.mapTypes.set('Pirate_Styled_Map', styledMapType);
         map.setMapTypeId('Pirate_Styled_Map');
 
+
   var infowindow = new google.maps.InfoWindow();
+  console.log(infowindow);
   bounds = new google.maps.LatLngBounds();
   self.locationList().forEach(function(location) {
 
@@ -194,7 +186,7 @@ var styledMapType = new google.maps.StyledMapType(
   markers.push(marker);
   bounds.extend(marker.position);
 //  console.log(markers);
-  var name = location.name();
+  //var name = location.name();
 
   marker.addListener('click', function() {
   //  console.log("marker click");
@@ -205,7 +197,7 @@ var styledMapType = new google.maps.StyledMapType(
   //  console.log(self.currentLocation());
 //    var html = "<div id='content holder'><div id = 'picture'></div><div id = 'info'><div id = 'venue'></div></div><div id = 'review'></div></div>";
     //self.currentLocation(self.locationList()[i]);
-    populateInfoWindow(this, infowindow, name);
+    populateInfoWindow(this, infowindow);
   });
 
   function toggleBounce() {
@@ -227,13 +219,35 @@ map.fitBounds(bounds);
 
 }
 
-function populateInfoWindow(marker, infowindow, content) {
+function populateInfoWindow(marker, infowindow) {
+
+
+//console.log(content);
+var content =
+'  <div>' +
+'    <div id="iw-name">'+
+'      <h3 class="text-center">'+self.currentLocation().name()+'</h3>'+
+'    </div>'+
+'  <hr>'+
+'  </div>'+
+'  <div>'+
+'    <div>'+
+'      <img src="'+self.currentLocation().bestPhotoLink()+'"/>'+
+'      <span>'+self.currentLocation().address+'</span>'+
+'      <span class="rating">'+self.currentLocation().rating()+'</span>'+
+'    </div>'+
+'  </div>'+
+'  <div>'+
+'    <div>'+
+'      <span>'+self.currentLocation().latestTip()+'</span>'+
+'    </div>'+
+'  </div>';
 
   if(infowindow.marker != marker) {
     infowindow.marker = marker;
-    infowindow.setContent($('#info-window').html());
-  //  console.log(self.currentLocation());
   //  infowindow.setContent(content);
+  //  console.log(self.currentLocation());
+    infowindow.setContent(content);
     infowindow.open(map, marker);
 
     infowindow.addListener('closeclick', function() {
@@ -253,12 +267,13 @@ function showLocations() {
   map.fitBounds(bounds);
 }
 
-function hideLocations(id) {
+function hideLocations() {
 
-  for (var i = 0; i < markers.length; i++) {
-  if(markers[i].id !== id)
-    markers[i].setMap(null);
-  }
+  self.locationList().forEach(function(location) {
+      if(self.selectedCategory() != location.category())
+        location.marker.setMap(null);
+  });
+
 }
 
 
