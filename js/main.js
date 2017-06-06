@@ -117,7 +117,7 @@ Location.prototype.addExtraData = function(data) {
                 ratingColor = "none";
               }
                if(extras.tips.count > 0) {
-                 latestTip = extras.tips.groups[0].items[0];
+                 latestTip = extras.tips.groups[0].items[0].text;
                } //if
                else {latestTip = "no tips avaialable from this location";}
                if(typeof extras.bestPhoto != "undefined") {
@@ -176,7 +176,24 @@ var styledMapType = new google.maps.StyledMapType(
         map.setMapTypeId('Pirate_Styled_Map');
 
 
-  var infowindow = new google.maps.InfoWindow();
+  var infowindow = new google.maps.InfoWindow(); var iwOuter = $('.gm-style-iw');
+
+   /* The DIV we want to change is above the .gm-style-iw DIV.
+    * So, we use jQuery and create a iwBackground variable,
+    * and took advantage of the existing reference to .gm-style-iw for the previous DIV with .prev().
+    */
+google.maps.event.addListener(infowindow, 'domready', function() {
+
+   var iwBackground = iwOuter.prev();
+
+   // Remove the background shadow DIV
+   iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+
+   // Remove the white background DIV
+   iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+
+});
+
   console.log(infowindow);
   bounds = new google.maps.LatLngBounds();
   self.locationList().forEach(function(location) {
@@ -234,17 +251,16 @@ function populateInfoWindow(marker, infowindow) {
 
 //console.log(content);
 var content =
-'  <div>' +
-'    <div id="iw-name">'+
+'  <div class="iw-container">' +
+'    <div class="iw-name">'+
 '      <h3 class="text-center">'+self.currentLocation().name()+'</h3>'+
 '    </div>'+
-'  <hr>'+
 '  </div>'+
 '  <div>'+
 '    <div>'+
-'      <img src="'+self.currentLocation().bestPhotoLink()+'"/>'+
-'      <span>'+self.currentLocation().address+'</span>'+
-'      <span class="rating">'+self.currentLocation().rating()+'</span>'+
+'      <img style="float:left" src="'+self.currentLocation().bestPhotoLink()+'"/>'+
+'      <p class="align-right">'+self.currentLocation().address+'</p>'+
+'      <p class="align-right">'+self.currentLocation().rating()+'</p>'+
 '    </div>'+
 '  </div>'+
 '  <div>'+

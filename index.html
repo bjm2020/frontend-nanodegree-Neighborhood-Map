@@ -48,11 +48,18 @@
                   </div>
         <div class="transparent transparent-foursquare">
           <img class="poweredbyfoursquare" src="img/poweredbyfoursquare.png">
+
+          <div class="alert alert-warning" data-bind="visible: showGoogleAlert">
+            <span data-bind="text: alertText"></span>
+          </div>
         </div>
 
   </div>
 
 
+
+
+
 </div>
 
 
@@ -67,9 +74,6 @@
 
 
 
-<div class="alert alert-warning" data-bind="visible: showGoogleAlert">
-  <span data-bind="text: alertText"></span>
-</div>
 
 
     <script type='text/javascript' src='js/knockout-3.4.2.js'></script>
