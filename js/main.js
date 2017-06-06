@@ -54,17 +54,31 @@ Location.prototype.addExtraData = function(data) {
                var venue = venues[i];
             //   console.log(venue.id);
             //  console.log(venue.name);
+            var category;
+            var iconLink;
+            var categoryID;
+            if(venue.categories.length === 0){
+            category = "undefined";
+            iconLink = "";
+            categoryID = "";
+          }
+            else {
+              category = venue.categories[0].pluralName;
+              iconLink = venue.categories[0].icon.prefix+"bg_32"+venue.categories[0].icon.suffix;
+              categoryID = venue.categories[0].id;
+            }
+
              var venueData = {
                name: venue.name,
                street: venue.location.address,
                city: venue.location.city,
-               category: venue.categories[0].pluralName,
-               categoryID: venue.categories[0].id,
+               category: category,
+               categoryID: categoryID,
                foursquareID: venue.id,
                location: {lat: venue.location.lat, lng: venue.location.lng},
-               iconLink: venue.categories[0].icon.prefix+"bg_32"+venue.categories[0].icon.suffix
+               iconLink: iconLink
              } //venue data
-             console.log(venueData);
+             //console.log(venueData);
              self.locationList.push(new Location(venueData));
 
            } //for loop
@@ -73,15 +87,11 @@ Location.prototype.addExtraData = function(data) {
           },
           error: function(jqXHR, textStatus, errorThrown) {
             self.alertText(jqXHR.status + " " + textStatus + " " + errorThrown);
-            console.log(jqXHR);
             self.showGoogleAlert(true);
 
           } //success
 
         }).done(function() {
-          console.log("start 2nd ajax");
-          console.log(self.locationList()[0].foursquareID);
-          console.log(self.locationList().length);
           self.locationList().forEach(function(location) {
 
 
