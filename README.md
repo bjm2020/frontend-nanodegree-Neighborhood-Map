@@ -4,7 +4,16 @@ Hi,  welcome to my Neighborhood Map application.  My neighborhood map features m
 
 ## Running The Application
 
-To run the application, simply visit https://bjm2020.github.io/frontend-nanodegree-Neighborhood-Map/.
+To run the application, simply visit https://bjm2020.github.io/frontend-nanodegree-Neighborhood-Map/ or downloaded from github and hosted on your own server.
+
+I reccommend python's simple http server:  
+
+```bash
+  $> cd /path/to/your-project-folder
+  $> python -m SimpleHTTPServer 8080
+  ```
+
+Open a browser and visit localhost:8080
 
 ## Foursquare data
 
